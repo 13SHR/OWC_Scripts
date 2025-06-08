@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import time
 
 NB_BITS  = 2
@@ -9,12 +7,14 @@ POS_BITS = {"0b0":0,
             "0b10":2, 
             "0b11":3
            }
-TS = 0.00001 # secondes - durée d'un signal i.e. Temps par Symbole
+TS = 0.000001 # secondes - durée d'un signal i.e. Temps par Symbole
 TE = TS / NB_POS
 
+# Convertir char en une liste de 2 bits qui, une fois mis ensemble en petit boutiste, forment char
 def hex_vers_chunks(char):
     return list(map(bin, [(char >> 2*x) & 3 for x in range(4)]))
 
+# Convertit en liste de 2 bits le texte dans s
 def texte_vers_chunks(s):
     res = []
     for char in s:
@@ -22,12 +22,16 @@ def texte_vers_chunks(s):
 
     return res
 
+# Émet le signal de début de transmission
 def sync_debut():
-    pass
+    emit([1] * NB_POS)
 
+# Émet le signal de fin de transmission
 def sync_fin():
-    pass
+    sync_debut()
 
+# Émet les groupes de 2 bits contenus dans liste_2_bits
+# Écrit la sortie simulée dans fout
 def emit(liste_2_bits, fout): 
     sync_debut()
     for chunk in liste_2_bits:
@@ -45,7 +49,7 @@ def emit(liste_2_bits, fout):
     sync_fin()
 
 def main():
-    with open("input.png", "rb") as fin:
+    with open("./input.png", "rb") as fin:
         texte = fin.read()
     chunk_list = texte_vers_chunks(texte)
     with open("sample.txt", "w") as fout:
